@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define LEN 15712
+#define LEN 304
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -27,7 +27,9 @@ class MainWindow : public QMainWindow
     unordered_map<int,QString> name;
     unordered_map<string,int> id;
     unordered_map<int,vector<vector<int>>> mp;
-    unordered_map<int,vector<vector<int>>> mp2;
+    unordered_map<int,vector<vector<int>>> mp_ans;
+    unordered_map<int,vector<vector<int>>> mp_wrong;
+    unordered_map<int,vector<vector<int>>> mp_miss;
 
 public:
     MainWindow(QWidget *parent = 0);

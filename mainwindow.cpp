@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     id["youlun"] = 2;
     id["youting"] = 3;
     id["yuchuan"] = 4;
-    freopen("../result_num.txt","r",stdin);
+    freopen("/home/yurikaka/Downloads/fangyi/result-v4/result_without_dup.txt","r",stdin);
     int x1, x2, y1, y2;
     string label, line, file, tmp;
     while (getline(cin,line)) {
@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
         label = tmp.substr(11,pos-11);
         mp[stoi(file)].push_back({id[label],x1,y1,x2,y2});
     }
-    ifstream vgg16("../result_num2.txt");
-    while (getline(vgg16,line)) {
+    ifstream ans("/home/yurikaka/Downloads/fangyi/result-v4/order.txt");
+    while (getline(ans,line)) {
         stringstream ss;
         ss.str(line);
         ss >> tmp >> y1 >> x2 >> y2;
@@ -33,7 +33,29 @@ MainWindow::MainWindow(QWidget *parent)
         int pos = tmp.rfind(',');
         x1 = stoi(tmp.substr(pos+1));
         label = tmp.substr(11,pos-11);
-        mp2[stoi(file)].push_back({id[label],x1,y1,x2,y2});
+        mp_ans[stoi(file)].push_back({id[label],x1,y1,x2,y2});
+    }
+    ifstream wrong("/home/yurikaka/Downloads/fangyi/result-v4/wrong.txt");
+    while (getline(wrong,line)) {
+        stringstream ss;
+        ss.str(line);
+        ss >> tmp >> y1 >> x2 >> y2;
+        file = tmp.substr(0,6);
+        int pos = tmp.rfind(',');
+        x1 = stoi(tmp.substr(pos+1));
+        label = tmp.substr(11,pos-11);
+        mp_wrong[stoi(file)].push_back({id[label],x1,y1,x2,y2});
+    }
+    ifstream miss("/home/yurikaka/Downloads/fangyi/result-v4/miss.txt");
+    while (getline(miss,line)) {
+        stringstream ss;
+        ss.str(line);
+        ss >> tmp >> y1 >> x2 >> y2;
+        file = tmp.substr(0,6);
+        int pos = tmp.rfind(',');
+        x1 = stoi(tmp.substr(pos+1));
+        label = tmp.substr(11,pos-11);
+        mp_miss[stoi(file)].push_back({id[label],x1,y1,x2,y2});
     }
     this->resize(1200,1050);
     num = 0;
@@ -59,22 +81,34 @@ void MainWindow::show_img() {
     cur->setText(filename);
     while (filename.size() < 6)
         filename = "0" + filename;
-    filename = "..\\test-v2\\" + filename + ".jpg";
+    filename = "/home/yurikaka/Downloads/fangyi/test-v3-judge/" + filename + ".jpg";
     this->setWindowTitle("img_label  "+filename);
     lab->setText(filename);
     img->load(filename);
     QPainter p(img);
     QPen pen;
     pen.setWidth(3);
-    pen.setBrush(Qt::green);
+    pen.setBrush(Qt::white);
     p.setPen(pen);
     for (auto i : mp[num+1]) {
         p.drawRect(i[1],i[2],i[3]-i[1],i[4]-i[2]);
         p.drawText(i[1]+3,i[2]+3,i[3]-i[1],20,Qt::AlignLeft,name[i[0]]);
     }
+    pen.setBrush(Qt::green);
+    p.setPen(pen);
+    for (auto i : mp_ans[num+1]) {
+        p.drawRect(i[1],i[2],i[3]-i[1],i[4]-i[2]);
+        p.drawText(i[1]+3,i[4]+3,i[3]-i[1],20,Qt::AlignLeft,name[i[0]]);
+    }
     pen.setBrush(Qt::red);
     p.setPen(pen);
-    for (auto i : mp2[num+1]) {
+    for (auto i : mp_wrong[num+1]) {
+        p.drawRect(i[1],i[2],i[3]-i[1],i[4]-i[2]);
+        p.drawText(i[1]+3,i[4]+3,i[3]-i[1],20,Qt::AlignLeft,name[i[0]]);
+    }
+    pen.setBrush(Qt::yellow);
+    p.setPen(pen);
+    for (auto i : mp_miss[num+1]) {
         p.drawRect(i[1],i[2],i[3]-i[1],i[4]-i[2]);
         p.drawText(i[1]+3,i[4]+3,i[3]-i[1],20,Qt::AlignLeft,name[i[0]]);
     }
